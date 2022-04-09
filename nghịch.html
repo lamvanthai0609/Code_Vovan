@@ -1,0 +1,68 @@
+
+
+<html>
+<body style="
+    background-color: #bfbfbf;
+    display: flex;
+    align-items: center;
+    justify-content: center;">
+    <style type="text/css">
+        @keyframes rotate {
+            0% {
+                -webkit-transform: rotate3d(0, 0, 1, 0deg);
+                transform: rotate3d(0, 0, 1, 0deg);
+            }
+            25% {
+                -webkit-transform: rotate3d(0, 0, 1, 90deg);
+                transform: rotate3d(0, 0, 1, 90deg);
+            }
+            50% {
+                -webkit-transform: rotate3d(0, 0, 1, 180deg);
+                transform: rotate3d(0, 0, 1, 180deg);
+            }
+            75% {
+                -webkit-transform: rotate3d(0, 0, 1, 270deg);
+                transform: rotate3d(0, 0, 1, 270deg);
+            }
+            100% {
+                -webkit-transform: rotate3d(0, 0, 1, 360deg);
+                transform: rotate3d(0, 0, 1, 360deg);
+            }
+        }
+    </style>
+<img id="img" src="img/kh1.jpg" style="width: 200px; height: 200px; border-radius: 50%; "/>
+
+</body>
+</html>
+<script>
+audio  = new Audio();
+audio.src = "nhac/nnhh.mp3";   
+analyser = null;
+
+document.onclick = () => {
+    context = new AudioContext();
+    analyser = context.createAnalyser();
+    context.createMediaElementSource(audio)
+            .connect(analyser);
+    analyser.connect(context.destination);
+    audio.play();
+    document.getElementById('img').style.animation = 'rotate 5s normal linear infinite';
+    loop();
+}
+
+function loop() {
+    window.requestAnimationFrame(loop);
+
+    fbc = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(fbc);
+
+    avg = fbc.reduce((a,b) => a + b, 0) / fbc.length;
+    document.getElementById('img')
+        .style.width = avg * 3;
+    document.body.style.backgroundColor =
+        'rgb('+avg+','+avg+','+avg+')';
+     document.getElementById('img')
+        .style.height = avg * 3;
+     
+}
+</script>
